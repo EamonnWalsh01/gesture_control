@@ -5,7 +5,7 @@ import os
 import shutil
 
 # Paths to the original and new dataset directories
-original_dataset_path = "archive/leapGestRecog"
+original_dataset_path = "leapGestRecog"
 new_dataset_path = "organized_dataset"
 
 # Create the new dataset folder if it doesn't exist

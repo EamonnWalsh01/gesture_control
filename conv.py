@@ -70,7 +70,7 @@ model = CIFAR10Model()
 loss_fn = nn.CrossEntropyLoss()
 optimizer = optim.SGD(model.parameters(), lr=0.001, momentum=0.9)
 
-n_epochs = 4
+n_epochs = 1
 for epoch in range(n_epochs):
     # Training loop
     model.train()
@@ -99,12 +99,23 @@ for epoch in range(n_epochs):
     acc /= count
     print(f"Epoch {epoch+1}/{n_epochs}: model accuracy {acc*100:.2f}%")
 torch.save(model.state_dict(), "cifar10model.pth")
-X = torch.tensor([trainset.data[7]], dtype=torch.float32).permute(0,3,1,2)
+# Get the image tensor and label
+image_tensor, label = train_dataset[7]
+
+# Add a batch dimension
+X = image_tensor.unsqueeze(0)
+
+# Now X has shape (1, C, H, W)
+print(X.shape)
+
 model.eval()
 with torch.no_grad():
     feature_maps = model.conv1(X)
+
 fig, ax = plt.subplots(4, 8, sharex=True, sharey=True, figsize=(16,8))
-for i in range(0, 32):
-    row, col = i//8, i%8
-    ax[row][col].imshow(feature_maps[0][i])
+for i in range(32):
+    row, col = i // 8, i % 8
+    ax[row][col].imshow(feature_maps[0][i].cpu().numpy())
+
+plt.tight_layout()
 plt.show()

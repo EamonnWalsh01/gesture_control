@@ -41,7 +41,7 @@ def organize_dataset(source_folder, destination_folder):
     return label_to_idx
 
 # Usage
-source_folder = 'archive'
+source_folder = 'leapGestRecog'
 destination_folder = 'organized_dataset'
 label_to_idx = organize_dataset(source_folder, destination_folder)
 
