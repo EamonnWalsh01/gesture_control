@@ -74,7 +74,7 @@ if __name__ == "__main__":
     loss_fn = nn.CrossEntropyLoss()
     optimizer = optim.SGD(model.parameters(), lr=0.001, momentum=0.9)
 
-    n_epochs = 1
+    n_epochs =10
     for epoch in range(n_epochs):
     # Training loop
         model.train()
