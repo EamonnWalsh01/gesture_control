@@ -7,18 +7,19 @@ print('1')
 import matplotlib.pyplot as plt
 from tqdm import tqdm
 import os
+import torch.nn.functional as F
 dir="/dir"
-class CIFAR10Model(nn.Module):
+class pose_model(nn.Module):
     def __init__(self):
         super().__init__()
-        self.conv1 = nn.Conv2d(3, 32, kernel_size=(3,3), stride=1, padding=1)
+        self.conv1 = nn.Conv2d(3, 64, kernel_size=(3,3), stride=3, padding=1)
         self.act1 = nn.ReLU()
         self.drop1 = nn.Dropout(0.3)
-        self.conv2 = nn.Conv2d(32, 32, kernel_size=(3,3), stride=1, padding=1)
+        self.conv2 = nn.Conv2d(64, 32, kernel_size=(3,3), stride=3, padding=1)
         self.act2 = nn.ReLU()
         self.pool2 = nn.MaxPool2d(kernel_size=(2, 2))
         self.flat = nn.Flatten()
-        self.fc3 = nn.Linear(32 * 112 * 112, 512)
+        self.fc3 = nn.Linear(32 * 12 * 12, 512)
         self.act3 = nn.ReLU()
         self.drop3 = nn.Dropout(0.5)
         self.fc4 = nn.Linear(512, 10)
@@ -36,7 +37,8 @@ class CIFAR10Model(nn.Module):
         x = self.act3(self.fc3(x))
         x = self.drop3(x)
         x = self.fc4(x)
-        return x
+        output = F.log_softmax(x, dim=1)
+        return output
 
 
 
@@ -70,7 +72,7 @@ if __name__ == "__main__":
     print('3')
 
     # Model training code
-    model = CIFAR10Model()
+    model = pose_model()
     loss_fn = nn.CrossEntropyLoss()
     optimizer = optim.SGD(model.parameters(), lr=0.001, momentum=0.9)
 
@@ -78,7 +80,7 @@ if __name__ == "__main__":
     for epoch in range(n_epochs):
     # Training loop
         model.train()
-        train_pbar = tqdm(trainloader, desc=f'Epoch {epoch+1}/{n_epochs} [Train]', leave=False)
+        train_pbar = tqdm(trainloader, desc=f'Epoch {epoch+1}/{n_epochs} [Train]', leave=True)
         for inputs, labels in train_pbar:
             # Forward pass, backward pass, and weight update
             y_pred = model(inputs)
@@ -102,7 +104,7 @@ if __name__ == "__main__":
 
     acc /= count
     print(f"Epoch {epoch+1}/{n_epochs}: model accuracy {acc*100:.2f}%")    
-    torch.save(model.state_dict(), "cifar10model.pth")
+    torch.save(model.state_dict(), "pose_model.pth")
 
 
     # Visualization code

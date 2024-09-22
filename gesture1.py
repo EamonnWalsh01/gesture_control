@@ -1,7 +1,7 @@
 import cv2
 import os
 import torch 
-from conv import CIFAR10Model  # Make sure to import your model class
+from conv import pose_model  # Make sure to import your model class
 import numpy as np
 from torchvision import transforms
 
@@ -19,9 +19,9 @@ def get_class_names(dataset_path):
 dataset_path = 'organized_dataset'  
 gesture_names = get_class_names(dataset_path)
 
-model = CIFAR10Model()
+model = pose_model()
 
-state_dict = torch.load("cifar10model.pth")
+state_dict = torch.load("pose_model.pth")
 
 model.load_state_dict(state_dict)
 
@@ -30,6 +30,7 @@ model.eval()
 
 
 
+prediction_text = ""
 while True:
     ret, frame = cam.read()
     if not ret:
@@ -40,6 +41,7 @@ while True:
    
     display_frame = cv2.resize(frame, (448,448))
 
+    cv2.putText(display_frame, prediction_text, (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
     k = cv2.waitKey(1)
     if k%256 == 27:
         # ESC pressed
@@ -73,7 +75,6 @@ while True:
         predicted_class = torch.argmax(output).item()
 
 # Initialize prediction_text
-        prediction_text = ""
 
 # Get the name of the predicted gesture
         if 0 <= predicted_class < len(gesture_names):
