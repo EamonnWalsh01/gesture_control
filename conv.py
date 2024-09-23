@@ -51,8 +51,8 @@ if __name__ == "__main__":
     print(torch.cuda.current_device())
 
     # Paths to the train and test directories
-    train_dir = "organized_dataset/train"
-    test_dir = "organized_dataset/test"
+    train_dir = "skele_org/train"
+    test_dir = "skele_org/test"
 
     # Define transformations
     transform = transforms.Compose([
